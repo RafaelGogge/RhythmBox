@@ -162,6 +162,6 @@ Para dúvidas, sugestões ou problemas:
 
 ---
 
-**Desenvolvido por Rafael V. Gogge para amantes da música 🎶**
-**Futuras atualizações em breve!**
+**Futuras atualizações em breve! 🎶**
+
 
