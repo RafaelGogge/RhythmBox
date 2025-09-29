@@ -1,0 +1,189 @@
+
+<!-- =============================
+     RhythmBox - Página Inicial
+     Estrutura organizada e comentada
+============================= -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <!-- ========== METADADOS E IMPORTS ========== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RhythmBox - Sua Biblioteca Musical</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- CSS customizado -->
+    <link rel="stylesheet" href="/static/css/buscar.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Axios para requisições AJAX -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="#" type="image/x-icon">
+</head>
+
+<body>
+    <!-- ========== HEADER/NAVBAR ========== -->
+    <header class="mb-4">
+        <nav class="navbar navbar-expand-lg navbar-dark rounded-bottom shadow py-3" id="navbar-main">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="/">
+                    <span class="navbar-logo me-2">&#9835;</span>
+                    <span class="navbar-title fw-bold">RhythmBox</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-home" href="/">
+                                <i class="bi bi-house-fill me-1"></i>Início
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-buscar active" href="/buscar">
+                                <i class="bi bi-search me-1"></i>Buscar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-playlists" href="{{ url_for('playlists') }}">
+                                <i class="bi bi-music-note-list me-1"></i>Playlists
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ========== CONTEÚDO PRINCIPAL ========== -->
+    <main class="container">
+        <!-- Logo centralizada -->
+        <div class="d-flex justify-content-center mb-4 mt-2" id="logo-area">
+            <img src="/static/img/RhythmBox-Logo.jpeg" alt="Logo RhythmBox" class="logo-central">
+        </div>
+
+        <!-- ========== FORMULÁRIO DE BUSCA ========== -->
+        <form id="search-form" method="get" action="/buscar" class="row g-3 mb-4 align-items-end">
+            <div class="col-md-7">
+                <input type="text" class="form-control search-input" name="q" placeholder="Digite o nome para buscar" value="{{ query|default('') }}" required>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select search-mode" name="modo">
+                    <option value="musica" {% if modo == 'musica' or not modo %}selected{% endif %}>Buscar por música</option>
+                    <option value="artista" {% if modo == 'artista' %}selected{% endif %}>Buscar por artista</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100 search-btn">Buscar</button>
+            </div>
+        </form>
+
+    <!-- ========== RESULTADO: MÚSICAS DO ARTISTA ========== -->
+    {% if main_artist and (modo != 'album') %}
+            <div class="results-section mt-5">
+                <h2 class="h5 mb-4">Músicas do Artista: {{ main_artist.name }}</h2>
+                {% if main_artist_tracks %}
+                    <div class="row g-4" id="artist-results">
+                    {% for track in main_artist_tracks %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="music-card card h-100">
+                                {% if track.image_url %}
+                                    <img src="{{ track.image_url }}" class="card-img-top" alt="Capa do álbum de {{ track.name }}">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="music-card-title card-title">{{ track.name }}</h5>
+                                    <h6 class="music-card-artist card-subtitle mb-2">
+                                        <i class="bi bi-person-fill me-1"></i>{{ track.artist }}
+                                    </h6>
+                                    <p class="music-card-album card-text">
+                                        <i class="bi bi-disc-fill me-1"></i>{{ track.album }}
+                                    </p>
+
+                                    <!-- Preview de música -->
+                                    {% if track.preview_url %}
+                                        <audio controls style="width: 100%; margin-top: 10px;">
+                                            <source src="{{ track.preview_url }}" type="audio/mpeg">
+                                            Seu navegador não suporta o elemento de áudio.
+                                        </audio>
+                                    {% endif %}
+
+                                    <!-- Link Spotify -->
+                                    <a href="{{ track.spotify_url }}" target="_blank" class="btn spotify-link">
+                                        Ouvir no Spotify
+                                    </a>
+
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Nenhuma música encontrada para o artista.
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+    <!-- ========== RESULTADO: OUTRAS MÚSICAS E RECOMENDAÇÕES ========== -->
+    {% if other_tracks is defined and (modo != 'album') %}
+            <div class="results-section mt-5">
+                <h2 class="h5 mb-4">Músicas e Recomendações</h2>
+                {% if other_tracks %}
+                    <div class="row g-4" id="track-results">
+                    {% for track in other_tracks %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="music-card card h-100">
+                                {% if track.image_url %}
+                                    <img src="{{ track.image_url }}" class="card-img-top" alt="Capa do álbum de {{ track.name }}">
+                                {% endif %}
+                                <div class="card-body">
+
+                                    <h5 class="music-card-title card-title">{{ track.name }}</h5>
+                                    <h6 class="music-card-artist card-subtitle mb-2">
+                                        <i class="bi bi-person-fill me-1"></i>{{ track.artist }}
+                                    </h6>
+                                    <p class="music-card-album card-text">
+                                        <i class="bi bi-disc-fill me-1"></i>{{ track.album }}
+                                    </p>
+                                    <!-- Preview de música -->
+                                    {% if track.preview_url %}
+                                        <audio controls style="width: 100%; margin-top: 10px;">
+                                            <source src="{{ track.preview_url }}" type="audio/mpeg">
+                                            Seu navegador não suporta o elemento de áudio.
+                                        </audio>
+                                    {% endif %}
+                                    <!-- Link Spotify -->
+                                    <a href="{{ track.spotify_url }}" target="_blank" class="btn spotify-link">
+                                        Ouvir no Spotify
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Nenhuma recomendação encontrada.
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </main>
+
+    <!-- ========== SCRIPTS ========== -->
+    <script src="/static/js/buscar.js"></script>
+    <!-- Preview de 30s ao passar o mouse está em buscar.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

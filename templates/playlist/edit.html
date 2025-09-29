@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="h4 mb-4">Músicas da playlist: <span style="color:#1976d2">{{ playlist.name }}</span></h2>
+{% if playlist.tracks and playlist.tracks['items'] %}
+  <div class="row g-4">
+    {% for item in playlist.tracks['items'] %}
+      <div class="col-md-6 col-lg-4">
+        <div class="music-card card h-100 d-flex flex-row align-items-center p-2" style="gap: 16px;">
+          {% if item.track.album.images and item.track.album.images[0].url %}
+            <img src="{{ item.track.album.images[0].url }}" alt="Capa do álbum" style="width:64px; height:64px; object-fit:cover; border-radius:8px;">
+          {% else %}
+            <div style="width:64px; height:64px; background:#eee; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#bbb; font-size:2em;">♪</div>
+          {% endif %}
+          <div style="flex:1; min-width:0;">
+            <div class="fw-bold" style="font-size:1.08em; word-break:break-word;">{{ item.track.name }}</div>
+            <div style="color: var(--text-accent); font-size:0.98em;">{{ item.track.artists[0].name }}</div>
+            <div style="color:#8a7b6a; font-size:0.93em;">{{ item.track.album.name }}</div>
+          </div>
+          <form method="post" style="margin:0;" onsubmit="return confirm('Tem certeza que deseja remover esta música da playlist?');">
+            <input type="hidden" name="remove_track_uri" value="{{ item.track.uri }}">
+            <button type="submit" name="remove_track" class="btn btn-remove" style="padding:6px 14px;font-size:0.95em;">Remover</button>
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="alert alert-warning" style="background: var(--error-light); color: var(--error); border-radius: 8px;">Nenhuma música nesta playlist.</div>
+{% endif %}
+
+<a href="{{ url_for('playlists') }}" class="btn" style="background: var(--color-brown);">Voltar para playlists</a>
+{% endblock %}

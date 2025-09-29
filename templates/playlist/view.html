@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="container">
+    <h2 class="h4 mb-4">Playlist: <span style="color:#1976d2">{{ playlist.name }}</span></h2>
+    {% if playlist.tracks and playlist.tracks['items'] %}
+        <div class="row g-4" id="playlist-tracks">
+        {% for item in playlist.tracks['items'] %}
+            <div class="col-md-6 col-lg-4">
+                <div class="music-card card h-100">
+                    {% if item.track.album.images and item.track.album.images[0].url %}
+                        <img src="{{ item.track.album.images[0].url }}" class="card-img-top" alt="Capa do álbum de {{ item.track.name }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="music-card-title card-title">{{ item.track.name }}</h5>
+                        {% if item.track.artists and item.track.artists|length > 0 %}
+                        <div class="music-card-artist card-subtitle mb-2">
+                            <i class="bi bi-person-fill me-1"></i>
+                            {{ item.track.artists | map(attribute='name') | join(', ') }}
+                        </div>
+                        {% endif %}
+                        <div class="music-card-album card-text mb-2">
+                            <i class="bi bi-disc-fill me-1"></i>{{ item.track.album.name }}
+                        </div>
+                        {% if item.track.preview_url %}
+                            <audio controls style="width: 100%; margin-top: 10px;">
+                                <source src="{{ item.track.preview_url }}" type="audio/mpeg">
+                                Seu navegador não suporta o elemento de áudio.
+                            </audio>
+                        {% endif %}
+                        <a href="{{ item.track.external_urls.spotify }}" target="_blank" class="btn spotify-link mb-2">
+                            Ouvir no Spotify
+                        </a>
+                        <!-- Botão CRUD: Remover da playlist -->
+                        <form method="post" action="{{ url_for('edit_playlist', playlist_id=playlist.id) }}" style="margin-top:10px;">
+                            <input type="hidden" name="remove_track_uri" value="{{ item.track.uri }}">
+                            <button type="submit" name="remove_track" class="btn btn-danger w-100">Remover da Playlist</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning" style="background: var(--error-light); color: var(--error); border-radius: 8px;">Nenhuma música nesta playlist.</div>
+    {% endif %}
+    <a href="{{ url_for('playlists') }}" class="btn mt-4" style="background: var(--color-brown);">Voltar para Playlists</a>
+</main>
+{% endblock %}

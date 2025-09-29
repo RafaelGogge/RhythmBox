@@ -1,0 +1,47 @@
+@keyframes fade-in {
+    0% { opacity: 0; transform: translateY(30px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes pop {
+    0% { transform: scale(0.92); }
+    60% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+@keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-16px); }
+}
+
+.animate-fade-in {
+    animation: fade-in 1.1s cubic-bezier(.68,-0.55,.27,1.55);
+}
+.animate-pop {
+    animation: pop 0.6s cubic-bezier(.68,-0.55,.27,1.55);
+}
+.animate-bounce-slow {
+    animation: bounce-slow 2.5s infinite;
+}
+
+@media (max-width: 600px) {
+    .max-w-lg {
+        max-width: 95vw !important;
+        padding: 1.5rem !important;
+    }
+    .text-4xl {
+        font-size: 2rem !important;
+    }
+    .w-36, .h-36 {
+        width: 5.5rem !important;
+        height: 5.5rem !important;
+    }
+    .px-10 {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+    .py-4 {
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+    }
+}

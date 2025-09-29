@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Criar Playlist</h2>
+<form method="post">
+  <label for="name">Nome da playlist:</label>
+  <input type="text" id="name" name="name" required>
+  <button type="submit">Criar</button>
+</form>
+<a href="{{ url_for('playlists') }}">Voltar para playlists</a>
+{% endblock %}

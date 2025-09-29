@@ -1,0 +1,644 @@
+/* =============================
+   RhythmBox - buscar CSS
+   Estrutura comentada e organizada
+============================= */
+
+/* ====== 1. Importação de variáveis globais ====== */
+@import url('root.css');
+
+/* ====== 2. Layout e Estrutura Geral ====== */
+body {
+  background: var(--primary-bg);
+  color: var(--text-main);
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.2px;
+}
+
+/* Alinhamento do botão de buscar na tela de busca */
+.search-btn {
+  height: 48px;
+  margin-top: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.search-input,
+.search-mode {
+  height: 48px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--text-heading);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* ====== 3. Header e Navbar ====== */
+.navbar-title {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-size: 1.4rem;
+}
+
+.nav-link-home,
+.nav-link-buscar {
+  position: relative;
+  transition: var(--hover-transition);
+  margin: 0 0.5rem;
+  font-weight: 500;
+}
+
+.nav-link-home::before,
+.nav-link-buscar::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: var(--color-gold);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link-home:hover::before,
+.nav-link-buscar:hover::before,
+.nav-link-home.active::before,
+.nav-link-buscar.active::before {
+  width: 70%;
+}
+
+.nav-link-home.active,
+.nav-link-buscar.active,
+.nav-link-home:hover,
+.nav-link-buscar:hover {
+  color: var(--color-gold) !important;
+}
+
+/* ====== 4. Logo Centralizada ====== */
+/* Área do logo */
+#logo-area {
+  margin: 1.5rem 0 3rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Logo principal */
+.logo-central {
+  display: block;
+  margin: 0 auto 1.5rem auto;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: var(--shadow-strong);
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+  border: 4px solid var(--color-gold);
+  position: relative;
+}
+
+.logo-central::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(217, 168, 108, 0.2) 0%, rgba(217, 168, 108, 0) 70%);
+  z-index: -1;
+}
+
+/* Efeito hover no logo */
+.logo-central:hover {
+  transform: scale(1.08) rotate(5deg);
+  box-shadow: var(--shadow-hover), 0 0 0 8px rgba(217, 168, 108, 0.15);
+  border-color: var(--color-gold-light);
+}
+
+/* ====== 5. Formulário de Busca ====== */
+/* Container do formulário */
+#search-form {
+  background: var(--secondary-bg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow);
+  padding: 1.5rem 1.5rem 1rem;
+  position: relative;
+  overflow: hidden;
+  border: var(--border-card);
+}
+
+#search-form::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(217, 168, 108, 0.1), rgba(217, 168, 108, 0) 70%);
+  z-index: 0;
+}
+
+#search-form>* {
+  position: relative;
+  z-index: 1;
+}
+
+/* Estilo para labels */
+#search-form label {
+  color: var(--text-accent);
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+/* Campo de texto para busca */
+.search-input {
+  background: var(--text-light);
+  border: 1px solid rgba(217, 168, 108, 0.3);
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius-sm);
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  box-shadow: var(--shadow-inset);
+}
+
+.search-input:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring), var(--shadow-inset);
+  transform: translateY(-2px);
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* Seletor de modo de busca */
+.search-mode {
+  background: var(--text-light);
+  border: 1px solid rgba(217, 168, 108, 0.3);
+  border-radius: var(--border-radius-sm);
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-inset);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23A66660' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px;
+  padding-right: 2.5rem;
+}
+
+.search-mode:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring), var(--shadow-inset);
+  transform: translateY(-2px);
+}
+
+/* Botão de busca */
+
+/* ====== 6. Cards de Música/Artista ====== */
+/* Container do card */
+.music-card {
+  background: rgba(242, 238, 235, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--border-radius-md);
+  border: 1px solid rgba(217, 168, 108, 0.2);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  margin-bottom: 2rem;
+  position: relative;
+  box-shadow: var(--shadow);
+  height: 100%;
+}
+
+.music-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 30px 30px 0;
+  border-color: transparent var(--color-gold-light) transparent transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.music-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--shadow-hover);
+}
+
+.music-card:hover::after {
+  opacity: 1;
+}
+
+.card-img-top {
+  height: 180px;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+  border-bottom: 3px solid var(--color-gold);
+}
+
+.music-card:hover .card-img-top {
+  transform: scale(1.08);
+}
+
+.card-body {
+  padding: 1.5rem;
+  background: linear-gradient(180deg, var(--color-offwhite), rgba(242, 238, 235, 0.9));
+}
+
+/* Título da música */
+.music-card-title {
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  color: var(--text-heading);
+  font-size: 1.15rem;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  height: 2.8em;
+  position: relative;
+}
+
+.music-card-title::after {
+  content: '';
+  position: absolute;
+  bottom: -0.3rem;
+  left: 0;
+  width: 3rem;
+  height: 3px;
+  background: var(--color-gold);
+  border-radius: 3px;
+}
+
+/* Nome do artista */
+.music-card-artist {
+  color: var(--text-accent);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+/* Nome do álbum */
+.music-card-album {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Link para o Spotify */
+.spotify-link {
+  color: var(--color-brown);
+  border: 2px solid var(--color-brown);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.4rem 1rem;
+  border-radius: 2rem;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.spotify-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background: var(--color-brown);
+  transition: all 0.3s ease;
+  z-index: -1;
+}
+
+.spotify-link:hover {
+  color: var(--text-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(166, 102, 96, 0.3);
+}
+
+.spotify-link:hover::before {
+  width: 100%;
+}
+
+/* Adiciona um ícone ao botão do Spotify */
+.spotify-link::after {
+  content: '♫';
+  margin-left: 5px;
+  font-size: 1.1em;
+  transition: transform 0.3s ease;
+}
+
+.spotify-link:hover::after {
+  transform: rotate(15deg);
+}
+
+/* ====== 7. Botões ====== */
+/* (Botões principais já cobertos acima. Adicione outros botões customizados aqui se necessário) */
+
+/* ====== 8. Utilitários e Helpers ====== */
+/* (Adicione aqui classes utilitárias, espaçamentos, fontes, etc) */
+
+/* ====== 8.0 Seção de Resultados ====== */
+.results-section {
+  position: relative;
+  padding: 1rem 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.results-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+}
+
+/* ====== 8.1 Texto e Tipografia ====== */
+/* Elementos base de texto */
+/* Nota: As propriedades básicas de tipografia já foram definidas na seção 2 */
+
+/* Parágrafos específicos */
+p {
+  line-height: 1.6;
+}
+
+/* Estilização especial para cabeçalhos de seção */
+h2.h5 {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.7rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+h2.h5::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-gold), var(--color-brown), transparent);
+  border-radius: 3px;
+}
+
+h2.h5::after {
+  content: '♫';
+  position: absolute;
+  right: -25px;
+  top: -5px;
+  font-size: 0.9rem;
+  color: var(--color-gold);
+  transform: rotate(15deg);
+}
+
+/* Parágrafos e labels */
+p,
+label {
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+/* ====== 8.2 Elementos Específicos de Música ====== */
+/* Os estilos específicos dos elementos de música foram movidos para a seção 6. Cards de Música/Artista */
+
+/* ====== 8.3 Elementos de Formulário ====== */
+/* Campos de busca - definições complementares */
+.search-input,
+.search-mode {
+  /* Estas propriedades sobrescrevem as definições padrão do Bootstrap */
+  color: var(--text-main);
+  background-color: var(--text-light);
+}
+
+/* Placeholder personalizado */
+::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* ====== 9. Responsividade ====== */
+@media (max-width: 992px) {
+
+  /* Ajustes para tablets */
+  .music-card {
+    margin-bottom: 1.5rem;
+  }
+
+  #search-form {
+    padding: 1.2rem 1rem 0.7rem;
+  }
+
+  .card-img-top {
+    height: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* Ajustes para dispositivos móveis */
+  .logo-central {
+    width: 140px;
+    height: 140px;
+  }
+
+  #search-form {
+    padding: 1rem 0.8rem 0.5rem;
+  }
+
+  h2.h5 {
+    font-size: 1.1rem;
+    text-align: center;
+    display: block;
+  }
+
+  h2.h5::before {
+    width: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .card-body {
+    padding: 1.2rem;
+  }
+}
+
+@media (max-width: 576px) {
+
+  /* Ajustes para dispositivos muito pequenos */
+  .logo-central {
+    width: 120px;
+    height: 120px;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  .music-card-title {
+    font-size: 1rem;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    height: 1.4em;
+  }
+
+  .music-card-artist,
+  .music-card-album {
+    font-size: 0.85rem;
+  }
+
+  .spotify-link {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.8rem;
+  }
+
+  .alert {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ====== 10. Estados e Feedback ====== */
+/* Estilos para alertas e mensagens */
+.alert {
+  border-radius: var(--border-radius-md);
+  padding: 1.2rem;
+  margin-bottom: 2rem;
+  border: none;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 5px;
+}
+
+.alert-warning {
+  background-color: var(--warning-light);
+  color: #664d00;
+}
+
+.alert-warning::before {
+  background-color: var(--warning);
+}
+
+.alert-success {
+  background-color: var(--success-light);
+  color: #155724;
+}
+
+.alert-success::before {
+  background-color: var(--success);
+}
+
+.alert-danger {
+  background-color: var(--error-light);
+  color: #721c24;
+}
+
+.alert-danger::before {
+  background-color: var(--error);
+}
+
+/* Ícones de alerta */
+.alert::after {
+  font-family: 'system-ui';
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+  opacity: 0.2;
+}
+
+.alert-warning::after {
+  content: '⚠';
+}
+
+.alert-success::after {
+  content: '✓';
+}
+
+.alert-danger::after {
+  content: '✕';
+}
+
+/* Efeitos de loading */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+  position: relative;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.6) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="50" cy="50" r="32" stroke-width="8" stroke="%23D9A86C" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round" transform="rotate(335.008 50 50)"><animateTransform attributeName="transform" type="rotate" dur="1s" repeatCount="indefinite" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform></circle></svg>') no-repeat center center;
+  background-size: 50px;
+  z-index: 10;
+}
