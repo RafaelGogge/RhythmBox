@@ -1,49 +1,15 @@
-# ============================================
-# CORE DEPENDENCIES
-# ============================================
 flask==3.0.3
 spotipy==2.24.0
 python-dotenv==1.0.1
 requests==2.32.3
-
-# ============================================
-# PRODUCTION SERVER
-# ============================================
-# Em Vercel não usamos Gunicorn/Geven; manter vazio para evitar peso
-
-# ============================================
-# PERFORMANCE & OPTIMIZATION
-# ============================================
 flask-compress==1.15
 redis==5.0.4  # Cache e session storage
 vercel-wsgi==0.8.0
-
-# ============================================
-# SECURITY & RATE LIMITING
-# ============================================
 flask-limiter==3.7.0
 flask-cors==4.0.1
 flask-talisman==1.1.0
 flask-wtf==1.2.1
 wtforms==3.1.2
-
-# ============================================
-# LOGGING & MONITORING
-# ============================================
 python-json-logger==2.0.7
-
-# ============================================
-# CACHING & SESSION STORAGE
-# ============================================
 redis==5.0.4
 flask-session==0.8.0
-
-# ============================================
-# TESTING (DEVELOPMENT)
-# ============================================
-# Testes não são necessários em runtime; mover para requirements-dev.txt
-
-# ============================================
-# CODE QUALITY (DEVELOPMENT)
-# ============================================
-# Ferramentas de lint/format não são necessárias em runtime
