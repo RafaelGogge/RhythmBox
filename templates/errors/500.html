@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}500 - Erro Interno{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-900 via-black to-gray-900">
+    <div class="text-center px-4">
+        <h1 class="text-9xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-600">
+            500
+        </h1>
+        <h2 class="text-3xl font-bold text-white mt-4 mb-2">
+            Erro Interno do Servidor
+        </h2>
+        <p class="text-gray-400 text-lg mb-8">
+            Algo deu errado. Nossa equipe já foi notificada e está trabalhando nisso.
+        </p>
+        <div class="flex gap-4 justify-center">
+            <a href="{{ url_for('index') }}" 
+               class="px-6 py-3 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-lg hover:shadow-lg hover:shadow-red-500/50 transition-all duration-300">
+                🏠 Voltar ao Início
+            </a>
+            <button onclick="location.reload()" 
+                    class="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-all duration-300">
+                🔄 Tentar Novamente
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

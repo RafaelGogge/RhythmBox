@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<!-- CSS customizado da busca -->
+<link rel="stylesheet" href="/static/css/buscar.css">
+<!-- CSS adicional para add tracks -->
+<style>
+    .add-track-btn {
+        background: var(--color-gold) !important;
+        color: white !important;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .add-track-btn:hover {
+        background: var(--color-brown) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(166, 102, 96, 0.3);
+    }
+    
+    .playlist-header {
+        background: linear-gradient(135deg, var(--color-gold), var(--color-brown));
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        color: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .playlist-header h2 {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+    
+    .back-to-playlists {
+        background: var(--color-brown);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 30px;
+        transition: all 0.3s ease;
+    }
+    
+    .back-to-playlists:hover {
+        background: var(--color-gold);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(217, 168, 108, 0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="container">
+    <!-- Logo centralizada -->
+    <div class="d-flex justify-content-center mb-4 mt-2" id="logo-area">
+        <img src="/static/img/RhythmBox-Logo.jpeg" alt="Logo RhythmBox" class="logo-central">
+    </div>
+
+    <!-- Cabeçalho da Playlist -->
+    <div class="playlist-header">
+        <h2>
+            <i class="bi bi-music-note-list me-2"></i>
+            Adicionar músicas: {{ playlist.name }}
+        </h2>
+    </div>
+
+    {% if message %}
+        <div class="alert alert-info" style="margin-bottom: 1rem;">{{ message }}</div>
+    {% endif %}
+    <form id="search-form" method="post" class="row g-3 mb-4 align-items-end">
+        <div class="col-md-7">
+            <input type="text" class="form-control search-input" name="search_query" placeholder="Digite o nome para buscar" value="{{ request.form.search_query if request.form.search_query else '' }}" required>
+        </div>
+        <div class="col-md-3">
+            <select class="form-select search-mode" name="modo">
+                <option value="musica" {% if request.form.modo == 'musica' or not request.form.modo %}selected{% endif %}>Buscar por música</option>
+                <option value="artista" {% if request.form.modo == 'artista' %}selected{% endif %}>Buscar por artista</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" name="search" class="btn btn-primary w-100 search-btn">Buscar</button>
+        </div>
+    </form>
+
+    {% if busca_realizada %}
+        <!-- ========== RESULTADO: PERFIL DO ARTISTA ========== -->
+        {% if main_artist and request.form.modo == 'artista' %}
+            <!-- Perfil do Artista com Flip 3D -->
+            <div class="artist-profile-section mb-5">
+                <div class="artist-profile-card" id="artistProfileCard">
+                    <!-- FRENTE DO CARD -->
+                    <div class="artist-profile-front">
+                        <div class="artist-profile-image">
+                            {% if main_artist.image_url %}
+                                <img src="{{ main_artist.image_url }}" alt="{{ main_artist.name }}">
+                            {% else %}
+                                <div class="artist-placeholder">
+                                    <i class="bi bi-person-circle"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="artist-profile-info">
+                            <h1 class="artist-name">{{ main_artist.name }}</h1>
+                            <div class="artist-stats">
+                                {% if main_artist.followers %}
+                                <span class="artist-stat">
+                                    <i class="bi bi-people-fill"></i>
+                                    {{ "{:,}".format(main_artist.followers).replace(',', '.') }} seguidores
+                                </span>
+                                {% endif %}
+                                {% if main_artist.popularity %}
+                                <span class="artist-stat">
+                                    <i class="bi bi-star-fill"></i>
+                                    Popularidade: {{ main_artist.popularity }}/100
+                                </span>
+                                {% endif %}
+                            </div>
+                            {% if main_artist.genres %}
+                            <div class="artist-genres">
+                                {% for genre in main_artist.genres[:5] %}
+                                <span class="genre-badge">{{ genre }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <div class="artist-profile-buttons">
+                                {% if main_artist.spotify_url %}
+                                <a href="{{ main_artist.spotify_url }}" target="_blank" class="btn-spotify-profile" onclick="event.stopPropagation();">
+                                    <i class="bi bi-spotify"></i>
+                                    Abrir no Spotify
+                                </a>
+                                {% endif %}
+                                <a href="https://www.youtube.com/results?search_query={{ main_artist.name|urlencode }}+music" target="_blank" class="btn-youtube-profile" onclick="event.stopPropagation();">
+                                    <i class="bi bi-youtube"></i>
+                                    Abrir no YouTube
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flip-hint">
+                            <i class="bi bi-arrow-repeat"></i>
+                            Clique para ver músicas populares
+                        </div>
+                    </div>
+
+                    <!-- VERSO DO CARD -->
+                    <div class="artist-profile-back">
+                        <div class="artist-back-header">
+                            <h2 class="artist-back-title">{{ main_artist.name }}</h2>
+                            <p class="artist-back-subtitle">Músicas Mais Populares</p>
+                        </div>
+                        
+                        <div class="artist-back-content">
+                            {% if main_artist.top_tracks %}
+                            <div class="artist-back-section">
+                                <h3>
+                                    <i class="bi bi-music-note-list"></i>
+                                    Top Faixas
+                                </h3>
+                                <ul class="artist-top-tracks-list">
+                                    {% for track in main_artist.top_tracks[:10] %}
+                                    <li class="artist-top-track-item">
+                                        <span class="track-number">{{ loop.index }}</span>
+                                        {% if track.image_url %}
+                                        <img src="{{ track.image_url }}" alt="{{ track.name }}" class="track-cover-mini">
+                                        {% endif %}
+                                        <div class="track-info-mini">
+                                            <p class="track-name-mini">{{ track.name }}</p>
+                                            <p class="track-album-mini">{{ track.album }}</p>
+                                        </div>
+                                        <form method="post" style="margin: 0;" onclick="event.stopPropagation();">
+                                            <input type="hidden" name="track_uri" value="spotify:track:{{ track.id }}">
+                                            <input type="hidden" name="search_query" value="{{ request.form.search_query }}">
+                                            <input type="hidden" name="modo" value="artista">
+                                            <button type="submit" name="add_track" class="btn btn-sm add-track-btn" style="white-space: nowrap;" onclick="event.stopPropagation();">
+                                                <i class="bi bi-plus-circle"></i> Adicionar
+                                            </button>
+                                        </form>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                            
+                            <button class="btn-flip-back" onclick="flipArtistCard()">
+                                <i class="bi bi-arrow-left"></i>
+                                Voltar ao Perfil
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Artistas Relacionados/Similares -->
+            {% if related_artists %}
+            <div class="results-section mt-5">
+                <h2 class="section-title">
+                    <i class="bi bi-music-note-list"></i>
+                    Artistas Similares
+                </h2>
+                <div class="row g-4" id="related-artists-results">
+                {% for artist in related_artists %}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="artist-card">
+                            <div class="artist-card-image">
+                                {% if artist.image_url %}
+                                    <img src="{{ artist.image_url }}" alt="{{ artist.name }}">
+                                {% else %}
+                                    <div class="artist-card-placeholder">
+                                        <i class="bi bi-person-circle"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="artist-card-body">
+                                <h5 class="artist-card-name">{{ artist.name }}</h5>
+                                {% if artist.genres %}
+                                <div class="artist-card-genres">
+                                    {% for genre in artist.genres[:2] %}
+                                    <span class="genre-tag">{{ genre }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                {% if artist.popularity %}
+                                <div class="artist-card-popularity">
+                                    <i class="bi bi-star-fill"></i>
+                                    {{ artist.popularity }}/100
+                                </div>
+                                {% endif %}
+                                {% if artist.spotify_url %}
+                                <a href="{{ artist.spotify_url }}" target="_blank" class="btn btn-artist-spotify">
+                                    <i class="bi bi-spotify"></i>
+                                    Ver no Spotify
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        {% endif %}
+
+        <!-- ========== RESULTADO: MÚSICAS ========== -->
+        {% if search_results %}
+            <h4 style="color: var(--text-heading); margin-bottom: 1rem;">Resultados da busca:</h4>
+            <div class="row g-4" id="track-results">
+            {% for track in search_results %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="music-card card h-100" data-track-id="{{ track.id }}">
+                        {% if track.image_url %}
+                            <img src="{{ track.image_url }}" class="card-img-top" alt="Capa do álbum de {{ track.name }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="music-card-title card-title">{{ track.name }}</h5>
+                            <h6 class="music-card-artist card-subtitle mb-2">
+                                <i class="bi bi-person-fill me-1"></i>{{ track.artist }}
+                            </h6>
+                            <p class="music-card-album card-text">
+                                <i class="bi bi-disc-fill me-1"></i>{{ track.album }}
+                            </p>
+                            <div class="d-flex flex-column gap-2 mt-2">
+                                <a href="{{ track.spotify_url }}" target="_blank" class="btn spotify-link">
+                                    Ouvir no Spotify
+                                </a>
+                                <form method="post" style="margin:0;" id="add-track-form-{{ track.id }}">
+                                    <input type="hidden" name="track_uri" value="spotify:track:{{ track.id }}">
+                                    <input type="hidden" name="search_query" value="{{ request.form.search_query }}">
+                                    <input type="hidden" name="modo" value="{{ request.form.modo }}">
+                                    <button type="submit" name="add_track" class="btn add-track-btn w-100" onclick="event.stopPropagation();">
+                                        <i class="bi bi-plus-circle"></i> Adicionar à Playlist
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        {% elif not main_artist %}
+            <div class="alert alert-warning" style="background: var(--error-light); color: var(--error); border-radius: 8px;">
+                Nenhum resultado encontrado.
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <a href="{{ url_for('playlists') }}" class="back-to-playlists">
+        <i class="bi bi-arrow-left me-2"></i>
+        Voltar para Playlists
+    </a>
+</main>
+
+<script>
+    function flipArtistCard() {
+        const card = document.getElementById('artistProfileCard');
+        if (card) {
+            card.classList.toggle('flipped');
+        }
+    }
+
+    // Adiciona evento de clique no card inteiro, exceto nos botões
+    document.addEventListener('DOMContentLoaded', function() {
+        const artistCard = document.getElementById('artistProfileCard');
+        if (artistCard) {
+            // Vira o card ao clicar nele
+            artistCard.addEventListener('click', function(e) {
+                // Não vira se clicou em botão, link ou formulário dentro do card
+                if (
+                    e.target.closest('a') ||
+                    e.target.closest('button') ||
+                    e.target.closest('form')
+                ) {
+                    return;
+                }
+                artistCard.classList.add('flipped');
+            });
+
+            // Desvira o card ao clicar fora
+            document.body.addEventListener('click', function(e) {
+                // Só desvira se o card estiver virado
+                if (!artistCard.classList.contains('flipped')) return;
+                // Não desvira se clicou no card do artista, card de música, botão, link ou formulário
+                if (
+                    e.target.closest('.artist-profile-card') ||
+                    e.target.closest('.music-card') ||
+                    e.target.closest('a') ||
+                    e.target.closest('button') ||
+                    e.target.closest('form')
+                ) {
+                    return;
+                }
+                artistCard.classList.remove('flipped');
+            });
+        }
+
+        // Adiciona evento para enviar o formulário ao clicar no card da música
+        document.querySelectorAll('.music-card').forEach(function(card) {
+            card.addEventListener('click', function(e) {
+                // Não envia se clicou em link ou botão
+                if (e.target.closest('a') || e.target.closest('button')) return;
+                var trackId = card.getAttribute('data-track-id');
+                var form = document.getElementById('add-track-form-' + trackId);
+                if (form) form.submit();
+            });
+        });
+    });
+</script>
+
+<!-- JS da busca com auto-click -->
+<script src="/static/js/buscar.js"></script>
+{% endblock %}

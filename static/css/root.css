@@ -1,0 +1,426 @@
+/* ============================= */
+/* ARQUIVO: root.css REFATORADO  */
+/* Versão Consolidada e Otimizada */
+/* ============================= */
+
+/* ====== 1. Paleta de Cores Principal ====== */
+:root {
+  /* Cores Base */
+  --color-gold: #D9A86C;
+  --color-gold-light: #F0C796;
+  --color-gold-dark: #BD8A51;
+  --color-beige: #F2D6B3;
+  --color-beige-light: #FBF0E4;
+  --color-offwhite: #F2EEEB;
+  --color-brown: #A66660;
+  --color-brown-dark: #8A4E49;
+  --color-black: #0D0D0D;
+  --color-dark-gray: #2D2D2D;
+
+  /* Cores RGB (para transparências) */
+  --color-gold-rgb: 217, 168, 108;
+  --color-brown-rgb: 166, 102, 96;
+  --color-black-rgb: 13, 13, 13;
+
+  /* ====== 2. Fundos e Estrutura ====== */
+  --primary-bg: var(--color-offwhite);
+  --secondary-bg: var(--color-beige-light);
+  --tertiary-bg: var(--color-beige);
+  --navbar-bg: var(--color-dark-gray);
+  --accent: var(--color-gold);
+  --accent-hover: var(--color-gold-light);
+  --card-bg: linear-gradient(145deg, #ffffff, var(--color-beige-light));
+
+  /* ====== 3. Texto ====== */
+  --text-main: var(--color-black);
+  --text-accent: var(--color-brown);
+  --text-light: #ffffff;
+  --text-muted: #666666;
+  --text-heading: var(--color-brown-dark);
+
+  /* ====== 4. Bordas e Elementos ====== */
+  --border: var(--color-gold);
+  --border-light: var(--color-beige);
+  --border-radius-sm: 0.5rem;
+  --border-radius-md: 1rem;
+  --border-radius-lg: 1.5rem;
+  --border-card: 1px solid rgba(var(--color-gold-rgb), 0.2);
+
+  /* ====== 5. Estados e Feedback ====== */
+  --success: #4BB543;
+  --success-light: #E3F9E5;
+  --error: #D7263D;
+  --error-light: #FFEAEE;
+  --warning: #FFD166;
+  --warning-light: #FFF5DD;
+  --info: #118AB2;
+  --info-light: #E3F4FA;
+
+  /* ====== 6. Hover e Foco ====== */
+  --hover-bg: var(--color-gold-light);
+  --hover-text: var(--color-black);
+  --hover-scale: scale(1.03);
+  --hover-transition: all 0.3s ease;
+  --focus-ring: 0 0 0 0.25rem rgba(var(--color-gold-rgb), 0.3);
+
+  /* ====== 7. Sombreamento ====== */
+  --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  --shadow-strong: 0 8px 30px rgba(0, 0, 0, 0.1);
+  --shadow-inset: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 10px 25px rgba(var(--color-brown-rgb), 0.15);
+}
+
+/* ====== 8. Base Styles ====== */
+
+body {
+  background: var(--primary-bg);
+  color: var(--text-main);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--text-heading);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* ====== 9. COMPONENTES COMPARTILHADOS ====== */
+
+/* --- 9.1 Navbar --- */
+.navbar {
+  background: var(--navbar-bg);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  padding: 0.8rem 0;
+  transition: var(--hover-transition);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.navbar-logo {
+  color: var(--accent);
+  transition: transform 0.3s ease;
+}
+
+.navbar:hover .navbar-logo {
+  transform: rotate(15deg);
+}
+
+.navbar-title {
+  background: linear-gradient(45deg, var(--color-gold), var(--color-brown));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+.nav-link {
+  position: relative;
+  margin: 0 5px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* Links específicos da navbar */
+.nav-link-home,
+.nav-link-buscar,
+.nav-link-playlists,
+.nav-link-favoritos {
+  position: relative;
+  transition: var(--hover-transition);
+  margin: 0 0.5rem;
+  font-weight: 500;
+}
+
+.nav-link-home::before,
+.nav-link-buscar::before,
+.nav-link-playlists::before,
+.nav-link-favoritos::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: var(--color-gold);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link-home:hover::before,
+.nav-link-buscar:hover::before,
+.nav-link-playlists:hover::before,
+.nav-link-favoritos:hover::before,
+.nav-link-home.active::before,
+.nav-link-buscar.active::before,
+.nav-link-playlists.active::before,
+.nav-link-favoritos.active::before {
+  width: 70%;
+}
+
+.nav-link-home.active,
+.nav-link-buscar.active,
+.nav-link-playlists.active,
+.nav-link-favoritos.active,
+.nav-link-home:hover,
+.nav-link-buscar:hover,
+.nav-link-playlists:hover,
+.nav-link-favoritos:hover {
+  color: var(--color-gold);
+}
+
+/* --- 9.2 Botões Base --- */
+.btn {
+  border-radius: var(--border-radius-sm);
+  font-weight: 500;
+  padding: 0.5rem 1.25rem;
+  transition: var(--hover-transition);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.btn:hover {
+  transform: var(--hover-scale);
+  box-shadow: var(--shadow-hover);
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--text-light);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background: var(--color-gold-dark);
+  border-color: var(--color-gold-dark);
+}
+
+/* Botões de Ação para Playlists */
+.btn-add {
+  background: var(--color-gold);
+  color: var(--text-main);
+  border: 1.5px solid #e7d3b2;
+}
+
+.btn-add:hover {
+  background: #b88a3c;
+  color: var(--text-light);
+  box-shadow: 0 2px 8px rgba(var(--color-gold-rgb), 0.13);
+}
+
+.btn-edit {
+  background: #f5f7fa;
+  color: #1976d2;
+  border: 1.5px solid #e0e0e0;
+}
+
+.btn-edit:hover {
+  background: #e3e9f2;
+  color: #1251a3;
+}
+
+.btn-remove {
+  background: var(--error);
+  color: var(--text-light);
+  border: 1.5px solid var(--error);
+}
+
+.btn-remove:hover {
+  background: #b71c1c;
+  border-color: #b71c1c;
+}
+
+/* --- 9.3 Botão de Busca --- */
+.search-btn {
+  color: var(--text-light);
+  background: linear-gradient(45deg, var(--color-gold), var(--color-gold-dark));
+  border: none;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius-sm);
+  transition: var(--hover-transition);
+  box-shadow: 0 4px 10px rgba(var(--color-gold-rgb), 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  height: 48px;
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.search-btn:hover::before {
+  left: 100%;
+}
+
+.search-btn:hover,
+.search-btn:focus {
+  background: linear-gradient(45deg, var(--color-brown), var(--color-brown-dark));
+  color: var(--text-light);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(var(--color-brown-rgb), 0.4);
+}
+
+/* --- 9.4 Campos de Formulário --- */
+.search-input,
+.search-mode {
+  background: var(--text-light);
+  border: 1px solid rgba(var(--color-gold-rgb), 0.3);
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius-sm);
+  transition: var(--hover-transition);
+  font-size: 1rem;
+  box-shadow: var(--shadow-inset);
+  height: 48px;
+  color: var(--text-main);
+}
+
+.search-input:focus,
+.search-mode:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring), var(--shadow-inset);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.search-mode {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23A66660' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px;
+  padding-right: 2.5rem;
+}
+
+/* --- 9.5 Cards --- */
+.card {
+  border-radius: var(--border-radius-md);
+  background: var(--card-bg);
+  border: var(--border-card);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: var(--hover-transition);
+}
+
+.card:hover {
+  transform: var(--hover-scale);
+  box-shadow: var(--shadow-hover);
+}
+
+.card-img-top {
+  transition: transform 0.5s ease;
+  object-fit: cover;
+}
+
+.card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+/* --- 9.6 Alertas --- */
+.alert {
+  border-radius: var(--border-radius-sm);
+  border: none;
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.alert-warning {
+  background-color: var(--warning-light);
+  color: #664d00;
+}
+
+.alert-success {
+  background-color: var(--success-light);
+  color: #155724;
+}
+
+.alert-danger {
+  background-color: var(--error-light);
+  color: #721c24;
+}
+
+/* ====== 10. UTILITÁRIOS ====== */
+
+.fw-bold {
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+/* ====== 11. RESPONSIVIDADE ====== */
+
+@media (max-width: 992px) {
+  .navbar {
+    padding: 0.6rem 0;
+  }
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  body {
+    font-size: 0.9rem;
+  }
+
+  .btn {
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+  }
+}

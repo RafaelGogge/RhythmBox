@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Playlists</h2>
+<a href="{{ url_for('create_playlist') }}" class="btn">Criar nova playlist</a>
+<ul class="playlists-list">
+  {% for playlist in playlists %}
+    <li>
+      <strong>{{ playlist.name }}</strong> ({{ playlist.total_tracks }} músicas)
+      <a href="{{ url_for('edit_playlist', playlist_id=playlist.id) }}">Editar</a>
+      <form action="{{ url_for('delete_playlist', playlist_id=playlist.id) }}" method="post" style="display:inline;">
+        <button type="submit" onclick="return confirm('Remover apenas do visual?')">Remover</button>
+      </form>
+      <a href="{{ url_for('add_tracks_to_playlist', playlist_id=playlist.id) }}" class="btn btn-sm btn-success" style="margin-left:10px;">Incluir Música</a>
+    </li>
+  {% else %}
+    <li>Nenhuma playlist criada.</li>
+  {% endfor %}
+</ul>
+<p style="color:gray;font-size:small;">Remover só afeta o visual. Para excluir do Spotify, faça manualmente no app.</p>
+{% endblock %}

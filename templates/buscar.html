@@ -1,0 +1,362 @@
+{% extends "base.html" %}
+{% block title %}Buscar - RhythmBox{% endblock %}
+
+{% block extra_css %}
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Axios para requisições AJAX -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<!-- Logo centralizada -->
+<div class="d-flex justify-content-center mb-4 mt-2" id="logo-area">
+    <img src="/static/img/RhythmBox-Logo.jpeg" alt="Logo RhythmBox" class="logo-central">
+</div>
+
+<!-- ========== FORMULÁRIO DE BUSCA ========== -->
+<form id="search-form" method="get" action="/buscar" class="row g-3 mb-4 align-items-end">
+    <div class="col-md-7">
+        <input type="text" class="form-control search-input" name="q" placeholder="Digite o nome para buscar" value="{{ query|default('') }}" required>
+    </div>
+    <div class="col-md-3">
+        <select class="form-select search-mode" name="modo">
+            <option value="musica" {% if modo == 'musica' or not modo %}selected{% endif %}>Buscar por música</option>
+            <option value="artista" {% if modo == 'artista' %}selected{% endif %}>Buscar por artista</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100 search-btn">Buscar</button>
+    </div>
+</form>
+
+    <!-- ========== RESULTADO: PERFIL DO ARTISTA E MÚSICAS ========== -->
+    {% if main_artist and modo == 'artista' %}
+        <!-- Perfil do Artista com Flip 3D -->
+        <div class="artist-profile-section mb-5">
+            <div class="artist-profile-card" id="artistProfileCard">
+                <!-- FRENTE DO CARD -->
+                <div class="artist-profile-front">
+                    <div class="artist-profile-image">
+                        {% if main_artist.image_url %}
+                            <img src="{{ main_artist.image_url }}" alt="{{ main_artist.name }}">
+                        {% else %}
+                            <div class="artist-placeholder">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="artist-profile-info">
+                        <h1 class="artist-name">{{ main_artist.name }}</h1>
+                        <div class="artist-stats">
+                            {% if main_artist.followers %}
+                            <span class="artist-stat">
+                                <i class="bi bi-people-fill"></i>
+                                {{ "{:,}".format(main_artist.followers).replace(',', '.') }} seguidores
+                            </span>
+                            {% endif %}
+                            {% if main_artist.popularity %}
+                            <span class="artist-stat">
+                                <i class="bi bi-star-fill"></i>
+                                Popularidade: {{ main_artist.popularity }}/100
+                            </span>
+                            {% endif %}
+                        </div>
+                        {% if main_artist.genres %}
+                        <div class="artist-genres">
+                            {% for genre in main_artist.genres[:5] %}
+                            <span class="genre-badge">{{ genre }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <div class="artist-profile-buttons">
+                            {% if main_artist.spotify_url %}
+                            <a href="{{ main_artist.spotify_url }}" target="_blank" class="btn-spotify-profile" onclick="event.stopPropagation();">
+                                <i class="bi bi-spotify"></i>
+                                Abrir no Spotify
+                            </a>
+                            {% endif %}
+                            <a href="https://www.youtube.com/results?search_query={{ main_artist.name|urlencode }}+music" target="_blank" class="btn-youtube-profile" onclick="event.stopPropagation();">
+                                <i class="bi bi-youtube"></i>
+                                Abrir no YouTube
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flip-hint">
+                        <i class="bi bi-arrow-repeat"></i>
+                        Clique para ver músicas populares
+                    </div>
+                </div>
+
+                <!-- VERSO DO CARD -->
+                <div class="artist-profile-back">
+                    <div class="artist-back-header">
+                        <h2 class="artist-back-title">{{ main_artist.name }}</h2>
+                        <p class="artist-back-subtitle">Músicas Mais Populares</p>
+                    </div>
+                    
+                    <div class="artist-back-content">
+                        {% if main_artist_tracks %}
+                        <div class="artist-back-section">
+                            <h3>
+                                <i class="bi bi-music-note-list"></i>
+                                Top Faixas
+                            </h3>
+                            <ul class="artist-top-tracks-list">
+                                {% for track in main_artist_tracks[:10] %}
+                                <li class="artist-top-track-item">
+                                    <span class="track-number">{{ loop.index }}</span>
+                                    {% if track.image_url %}
+                                    <img src="{{ track.image_url }}" alt="{{ track.name }}" class="track-cover-mini">
+                                    {% endif %}
+                                    <div class="track-info-mini">
+                                        <p class="track-name-mini">{{ track.name }}</p>
+                                        <p class="track-album-mini">{{ track.album }}</p>
+                                    </div>
+                                    <div class="track-actions-mini">
+                                        <button class="btn btn-sm btn-favorite-mini" 
+                                                data-track-id="{{ track.id }}" 
+                                                data-track-name="{{ track.name }}" 
+                                                onclick="event.stopPropagation(); favoritarMusicaArtista(this);" 
+                                                title="Adicionar aos favoritos">
+                                            <i class="bi bi-heart"></i>
+                                        </button>
+                                        <a href="{{ track.spotify_url }}" target="_blank" class="btn btn-sm btn-play-mini" onclick="event.stopPropagation();" title="Tocar no Spotify">
+                                            <i class="bi bi-play-fill"></i>
+                                        </a>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        
+                        <button class="btn-flip-back" onclick="flipArtistCard()">
+                            <i class="bi bi-arrow-left"></i>
+                            Voltar ao Perfil
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function flipArtistCard() {
+                const card = document.getElementById('artistProfileCard');
+                if (card) {
+                    card.classList.toggle('flipped');
+                }
+            }
+
+            // Função para favoritar música do artista
+            async function favoritarMusicaArtista(button) {
+                if (button.disabled) return;
+                button.disabled = true;
+
+                // Obter dados do botão
+                const trackId = button.getAttribute('data-track-id');
+                const trackName = button.getAttribute('data-track-name');
+
+                try {
+                    const response = await axios.post('/favoritar', { track_id: trackId });
+                    
+                    if (response.data.success) {
+                        // Atualiza visual do botão
+                        button.classList.add('favorited');
+                        button.innerHTML = '<i class="bi bi-heart-fill"></i>';
+                        
+                        // Mostra feedback de sucesso
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Adicionado aos favoritos!',
+                            text: `"${trackName}" foi adicionado à sua biblioteca`,
+                            timer: 2000,
+                            showConfirmButton: false,
+                            toast: true,
+                            position: 'top-end'
+                        });
+
+                        setTimeout(() => {
+                            button.disabled = false;
+                        }, 2000);
+                    } else {
+                        throw new Error(response.data.message || 'Erro ao favoritar');
+                    }
+                } catch (error) {
+                    button.disabled = false;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro ao favoritar',
+                        text: error.response?.data?.message || error.message || 'Tente novamente',
+                        timer: 3000,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                }
+            }
+
+            // Adiciona evento de clique no card inteiro, exceto nos botões
+            document.addEventListener('DOMContentLoaded', function() {
+                const card = document.getElementById('artistProfileCard');
+                if (card) {
+                    card.addEventListener('click', function(e) {
+                        // Não vira se clicou em um link ou botão
+                        if (e.target.closest('a') || e.target.closest('button')) {
+                            return;
+                        }
+                        flipArtistCard();
+                    });
+                }
+            });
+        </script>
+
+        <!-- Artistas Relacionados/Similares -->
+        {% if related_artists %}
+        <div class="results-section mt-5">
+            <h2 class="section-title">
+                <i class="bi bi-music-note-list"></i>
+                Artistas Similares
+            </h2>
+            <div class="row g-4" id="related-artists-results">
+            {% for artist in related_artists %}
+                <div class="col-md-6 col-lg-3">
+                    <div class="artist-card">
+                        <div class="artist-card-image">
+                            {% if artist.image_url %}
+                                <img src="{{ artist.image_url }}" alt="{{ artist.name }}">
+                            {% else %}
+                                <div class="artist-card-placeholder">
+                                    <i class="bi bi-person-circle"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="artist-card-body">
+                            <h5 class="artist-card-name">{{ artist.name }}</h5>
+                            {% if artist.genres %}
+                            <div class="artist-card-genres">
+                                {% for genre in artist.genres[:2] %}
+                                <span class="genre-tag">{{ genre }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            {% if artist.popularity %}
+                            <div class="artist-card-popularity">
+                                <i class="bi bi-star-fill"></i>
+                                {{ artist.popularity }}/100
+                            </div>
+                            {% endif %}
+                            {% if artist.spotify_url %}
+                            <a href="{{ artist.spotify_url }}" target="_blank" class="btn btn-artist-spotify">
+                                <i class="bi bi-spotify"></i>
+                                Ver no Spotify
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+
+    <!-- ========== RESULTADO: MÚSICAS DO ARTISTA (modo antigo) ========== -->
+    {% if main_artist and modo != 'artista' and (modo != 'album') %}
+            <div class="results-section mt-5">
+                <h2 class="h5 mb-4">Músicas do Artista: {{ main_artist.name }}</h2>
+                {% if main_artist_tracks %}
+                    <div class="row g-4" id="artist-results">
+                    {% for track in main_artist_tracks %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="music-card">
+                                {# Capa do Álbum #}
+                                <div class="card-image">
+                                    {% if track.image_url %}
+                                    <img src="{{ track.image_url }}" alt="Capa de {{ track.name }}" loading="lazy">
+                                    {# Overlay com Botões de Ação #}
+                                    <div class="music-overlay">
+                                        <a href="{{ track.spotify_url }}" target="_blank" class="btn spotify-link" title="Ouvir no Spotify" onclick="event.stopPropagation();">
+                                            <i class="bi bi-spotify"></i>
+                                        </a>
+                                        <a href="https://www.youtube.com/results?search_query={{ track.artist|urlencode }}+{{ track.name|urlencode }}" target="_blank" class="btn youtube-link" title="Ouvir no YouTube" onclick="event.stopPropagation();">
+                                            <i class="bi bi-youtube"></i>
+                                        </a>
+                                        <button class="btn btn-favorite" onclick="favoritarMusica('{{ track.id }}', '{{ track.name|replace("'", "\\'") }}', this)" title="Adicionar aos favoritos">
+                                            <i class="bi bi-heart"></i>
+                                        </button>
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                {# Informações da Música #}
+                                <div class="card-info">
+                                    <h5 class="track-name" title="{{ track.name }}">{{ track.name }}</h5>
+                                    <p class="artist-name" title="{{ track.artist }}">{{ track.artist }}</p>
+                                    <p class="album-name" title="{{ track.album }}">{{ track.album }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Nenhuma música encontrada para o artista.
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+    <!-- ========== RESULTADO: OUTRAS MÚSICAS E RECOMENDAÇÕES ========== -->
+    {% if other_tracks is defined and (modo != 'album') %}
+            <div class="results-section mt-5">
+                <h2 class="h5 mb-4">Músicas e Recomendações</h2>
+                {% if other_tracks %}
+                    <div class="row g-4" id="track-results">
+                    {% for track in other_tracks %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="music-card">
+                                {# Capa do Álbum #}
+                                <div class="card-image">
+                                    {% if track.image_url %}
+                                    <img src="{{ track.image_url }}" alt="Capa de {{ track.name }}" loading="lazy">
+                                    {# Overlay com Botões de Ação #}
+                                    <div class="music-overlay">
+                                        <a href="{{ track.spotify_url }}" target="_blank" class="btn spotify-link" title="Ouvir no Spotify" onclick="event.stopPropagation();">
+                                            <i class="bi bi-spotify"></i>
+                                        </a>
+                                        <a href="https://www.youtube.com/results?search_query={{ track.artist|urlencode }}+{{ track.name|urlencode }}" target="_blank" class="btn youtube-link" title="Ouvir no YouTube" onclick="event.stopPropagation();">
+                                            <i class="bi bi-youtube"></i>
+                                        </a>
+                                        <button class="btn btn-favorite" onclick="favoritarMusica('{{ track.id }}', '{{ track.name|replace("'", "\\'") }}', this)" title="Adicionar aos favoritos">
+                                            <i class="bi bi-heart"></i>
+                                        </button>
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                {# Informações da Música #}
+                                <div class="card-info">
+                                    <h5 class="track-name" title="{{ track.name }}">{{ track.name }}</h5>
+                                    <p class="artist-name" title="{{ track.artist }}">{{ track.artist }}</p>
+                                    <p class="album-name" title="{{ track.album }}">{{ track.album }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Nenhuma recomendação encontrada.
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="/static/js/buscar.js"></script>
+{% endblock %}

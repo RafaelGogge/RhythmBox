@@ -1,0 +1,113 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Playlists</h2>
+<a href="{{ url_for('create_playlist') }}" class="btn">Criar nova playlist</a>
+<ul class="playlists-list">
+  {% for playlist in playlists %}
+  <li>
+    <div
+      class="playlist-card-header"
+      style="display: flex; align-items: center; gap: 18px; margin-bottom: 10px"
+    >
+      <a
+        href="{{ url_for('view_playlist', playlist_id=playlist.id) }}"
+        class="playlist-cover"
+        style="
+          display: block;
+          min-width: 72px;
+          min-height: 72px;
+          width: 72px;
+          height: 72px;
+          background: var(--color-gold, #c49b5c);
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+        "
+      >
+        {% if playlist.image_url %}
+        <img
+          src="{{ playlist.image_url }}"
+          alt="Capa da playlist"
+          style="width: 100%; height: 100%; object-fit: cover; display: block"
+          loading="lazy"
+        />
+        {% else %}
+        <span
+          style="
+            font-size: 2.3em;
+            color: var(--text-main, #2d1c00);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+          "
+          >♪</span
+        >
+        {% endif %}
+      </a>
+      <div
+        style="
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        "
+      >
+        <a
+          href="{{ url_for('view_playlist', playlist_id=playlist.id) }}"
+          class="playlist-title"
+          style="
+            text-decoration: none;
+            color: inherit;
+            font-size: 1.18em;
+            font-weight: 600;
+            line-height: 1.2;
+          "
+        >
+          {{ playlist.name }}
+        </a>
+        <span style="color: #8a7b6a; font-size: 0.98em; margin-top: 2px"
+          >{{ playlist.total_tracks }} música{{ 's' if playlist.total_tracks !=
+          1 }}</span
+        >
+      </div>
+    </div>
+    <div
+      class="playlist-actions"
+      style="margin-top: 10px; justify-content: flex-end; gap: 12px"
+    >
+      <a
+        href="{{ url_for('add_tracks_to_playlist', playlist_id=playlist.id) }}"
+        class="btn btn-add"
+        style="min-width: 120px"
+        >Adicionar músicas</a
+      >
+      <a
+        href="{{ url_for('edit_playlist', playlist_id=playlist.id) }}"
+        class="btn btn-edit"
+        style="min-width: 110px"
+        >Editar</a
+      >
+      <form
+        action="{{ url_for('delete_playlist', playlist_id=playlist.id) }}"
+        method="post"
+        style="display: inline; margin: 0"
+      >
+        <button
+          type="submit"
+          class="btn btn-remove"
+          style="min-width: 110px"
+          onclick="return confirm('Remover apenas do visual?\n\nPor segurança, não deletaremos a playlist no Spotify. Para excluir do Spotify, faça manualmente no app.')"
+        >
+          Remover
+        </button>
+      </form>
+    </div>
+  </li>
+  {% else %}
+  <li>Nenhuma playlist criada.</li>
+  {% endfor %}
+</ul>
+<script type="module" src="{{ url_for('static', filename='js/playlists.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,1544 @@
+/* ============================= */
+/* RhythmBox - buscar CSS        */
+/* Estrutura comentada e organizada */
+/* ============================= */
+
+/* ====== 1. Importação de variáveis globais ====== */
+/* Importa variáveis e cores do projeto */
+@import url('root.css');
+
+/* ====== 2. Layout e Estrutura Geral ====== */
+/* Define fonte, cor de fundo e espaçamento geral */
+body {
+  background: var(--primary-bg);
+  color: var(--text-main);
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.2px;
+}
+
+/* Alinhamento do botão de buscar na tela de busca */
+.search-btn {
+  height: 48px;
+  margin-top: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.search-input,
+.search-mode {
+  height: 48px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--text-heading);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* ====== 3. Header e Navbar ====== */
+/* Estilização do cabeçalho e navegação principal */
+.navbar-title {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-size: 1.4rem;
+}
+
+.nav-link-home,
+.nav-link-buscar {
+  position: relative;
+  transition: var(--hover-transition);
+  margin: 0 0.5rem;
+  font-weight: 500;
+}
+
+.nav-link-home::before,
+.nav-link-buscar::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: var(--color-gold);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link-home:hover::before,
+.nav-link-buscar:hover::before,
+.nav-link-home.active::before,
+.nav-link-buscar.active::before {
+  width: 70%;
+}
+
+.nav-link-home.active,
+.nav-link-buscar.active,
+.nav-link-home:hover,
+.nav-link-buscar:hover {
+  color: var(--color-gold) !important;
+}
+
+/* ====== 4. Logo Centralizada ====== */
+/* Área e efeito do logo principal */
+#logo-area {
+  margin: 1.5rem 0 3rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Logo principal */
+.logo-central {
+  display: block;
+  margin: 0 auto 1.5rem auto;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: var(--shadow-strong);
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+  border: 4px solid var(--color-gold);
+  position: relative;
+}
+
+.logo-central::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(217, 168, 108, 0.2) 0%, rgba(217, 168, 108, 0) 70%);
+  z-index: -1;
+}
+
+/* Efeito hover no logo */
+.logo-central:hover {
+  transform: scale(1.08) rotate(5deg);
+  box-shadow: var(--shadow-hover), 0 0 0 8px rgba(217, 168, 108, 0.15);
+  border-color: var(--color-gold-light);
+}
+
+/* ====== 5. Formulário de Busca ====== */
+/* Estilização do formulário de busca */
+#search-form {
+  background: var(--secondary-bg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow);
+  padding: 1.5rem 1.5rem 1rem;
+  position: relative;
+  overflow: hidden;
+  border: var(--border-card);
+}
+
+#search-form::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(217, 168, 108, 0.1), rgba(217, 168, 108, 0) 70%);
+  z-index: 0;
+}
+
+#search-form>* {
+  position: relative;
+  z-index: 1;
+}
+
+/* Estilo para labels */
+#search-form label {
+  color: var(--text-accent);
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+/* Campo de texto para busca */
+.search-input {
+  background: var(--text-light);
+  border: 1px solid rgba(217, 168, 108, 0.3);
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius-sm);
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  box-shadow: var(--shadow-inset);
+}
+
+.search-input:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring), var(--shadow-inset);
+  transform: translateY(-2px);
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* Seletor de modo de busca */
+.search-mode {
+  background: var(--text-light);
+  border: 1px solid rgba(217, 168, 108, 0.3);
+  border-radius: var(--border-radius-sm);
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-inset);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23A66660' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px;
+  padding-right: 2.5rem;
+}
+
+.search-mode:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring), var(--shadow-inset);
+  transform: translateY(-2px);
+}
+
+/* ====== 6. Cards de Música/Artista ====== */
+/* Cards para exibir músicas e artistas */
+.music-card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: var(--hover-transition);
+  border: var(--border-card);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100%;
+}
+
+.music-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* ----- Imagem do Card ----- */
+
+.card-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--color-beige);
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.music-card:hover .card-image img {
+  transform: scale(1.05);
+}
+
+/* ----- Informações do Card ----- */
+
+.card-info {
+  padding: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.track-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-heading);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.artist-name {
+  font-size: 0.95rem;
+  color: var(--text-accent);
+  font-weight: 500;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.album-name {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Link para o Spotify */
+.spotify-link {
+  color: #1DB954;
+  border: 2px solid #1DB954;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.4rem 1rem;
+  border-radius: 2rem;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.spotify-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background: #1DB954;
+  transition: all 0.3s ease;
+  z-index: -1;
+}
+
+.spotify-link:hover {
+  color: var(--text-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(29, 185, 84, 0.3);
+}
+
+.spotify-link:hover::before {
+  width: 100%;
+}
+
+/* ====== Overlay de Ações nos Cards de Música ====== */
+.music-card .music-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: radial-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.35));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.music-card:hover .music-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.music-overlay .spotify-link {
+  background: rgba(255, 255, 255, 0.9);
+  color: #1DB954;
+  border-color: transparent;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+}
+
+.music-overlay .spotify-link:hover {
+  background: #1DB954;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);
+}
+
+.music-overlay .spotify-link i {
+  font-size: 1.3rem;
+}
+
+.music-overlay .spotify-link::after {
+  display: none;
+}
+
+.music-overlay .youtube-link {
+  background: rgba(255, 255, 255, 0.9);
+  color: #FF0000;
+  border-color: transparent;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.music-overlay .youtube-link:hover {
+  background: #FF0000;
+  color: white;
+  transform: scale(1.1);
+}
+
+.music-overlay .youtube-link i {
+  font-size: 1.3rem;
+}
+
+.music-overlay .btn-favorite {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+
+.music-overlay .btn-favorite:hover,
+.music-overlay .btn-favorite.favorited {
+  background: var(--color-gold);
+  color: white;
+}
+
+/* ====== Container dos botões de ação (Spotify + Favoritar) ====== */
+.music-card-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+/* Ajusta o botão do Spotify para flex */
+.music-card-actions .spotify-link {
+  flex: 1;
+  text-decoration: none;
+}
+
+/* ====== Botão de Favoritar ====== */
+.btn-favorite {
+  background: transparent;
+  border: 2px solid var(--color-gold);
+  color: var(--color-gold);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-favorite i {
+  font-size: 1.3rem;
+  transition: all 0.3s ease;
+}
+
+.btn-favorite:hover {
+  background: var(--color-gold);
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+}
+
+.btn-favorite:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Estado favoritado */
+.btn-favorite.favorited {
+  background: var(--color-gold);
+  color: white;
+  border-color: var(--color-gold);
+}
+
+.btn-favorite.favorited i {
+  animation: heartBeat 0.5s ease;
+}
+
+/* Animação de batida do coração */
+@keyframes heartBeat {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  25% {
+    transform: scale(1.3);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  75% {
+    transform: scale(1.25);
+  }
+}
+
+/* ====== 7. Botões ====== */
+/* Botões customizados e principais */
+.btn-spotify-profile,
+.btn-youtube-profile {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-spotify-profile {
+  background: rgba(30, 215, 96, 0.95);
+  color: white;
+  padding: 14px 32px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-spotify-profile:hover {
+  background: rgb(30, 215, 96);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(30, 215, 96, 0.4);
+  color: white;
+}
+
+.btn-spotify-profile i {
+  font-size: 1.4rem;
+}
+
+.artist-profile-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn-youtube-profile {
+  background: rgba(255, 0, 0, 0.95);
+  color: white;
+  padding: 14px 32px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-youtube-profile:hover {
+  background: rgb(255, 0, 0);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 0, 0, 0.4);
+  color: white;
+}
+
+.btn-youtube-profile i {
+  font-size: 1.4rem;
+}
+
+/* ====== 8. Utilitários e Helpers ====== */
+/* Classes utilitárias, espaçamentos, fontes, etc. */
+.results-section {
+  position: relative;
+  padding: 1rem 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.results-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+}
+
+/* ====== 9. Texto e Tipografia ====== */
+/* Estilização de textos, títulos e parágrafos */
+p {
+  line-height: 1.6;
+}
+
+h2.h5 {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.7rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+h2.h5::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-gold), var(--color-brown), transparent);
+  border-radius: 3px;
+}
+
+h2.h5::after {
+  content: '♫';
+  position: absolute;
+  right: -25px;
+  top: -5px;
+  font-size: 0.9rem;
+  color: var(--color-gold);
+  transform: rotate(15deg);
+}
+
+p,
+label {
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+/* ====== 10. Elementos de Formulário ====== */
+/* Complementos para campos de busca */
+.search-input,
+.search-mode {
+  /* Estas propriedades sobrescrevem as definições padrão do Bootstrap */
+  color: var(--text-main);
+  background-color: var(--text-light);
+}
+
+/* Placeholder personalizado */
+::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* ====== 11. Responsividade ====== */
+/* Media queries para adaptação em telas menores */
+@media (max-width: 992px) {
+
+  /* Ajustes para tablets */
+  .music-card {
+    margin-bottom: 1.5rem;
+  }
+
+  #search-form {
+    padding: 1.2rem 1rem 0.7rem;
+  }
+
+  .card-img-top {
+    height: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* Ajustes para dispositivos móveis */
+  .logo-central {
+    width: 140px;
+    height: 140px;
+  }
+
+  #search-form {
+    padding: 1rem 0.8rem 0.5rem;
+  }
+
+  h2.h5 {
+    font-size: 1.1rem;
+    text-align: center;
+    display: block;
+  }
+
+  h2.h5::before {
+    width: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .card-body {
+    padding: 1.2rem;
+  }
+}
+
+@media (max-width: 576px) {
+
+  /* Ajustes para dispositivos muito pequenos */
+  .logo-central {
+    width: 120px;
+    height: 120px;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  .music-card-title {
+    font-size: 1rem;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    height: 1.4em;
+  }
+
+  .music-card-artist,
+  .music-card-album {
+    font-size: 0.85rem;
+  }
+
+  .spotify-link {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.8rem;
+  }
+
+  .alert {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ====== 12. Estados e Feedback ====== */
+/* Alertas, mensagens e efeitos de loading */
+.alert {
+  border-radius: var(--border-radius-md);
+  padding: 1.2rem;
+  margin-bottom: 2rem;
+  border: none;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 5px;
+}
+
+.alert-warning {
+  background-color: var(--warning-light);
+  color: #664d00;
+}
+
+.alert-warning::before {
+  background-color: var(--warning);
+}
+
+.alert-success {
+  background-color: var(--success-light);
+  color: #155724;
+}
+
+.alert-success::before {
+  background-color: var(--success);
+}
+
+.alert-danger {
+  background-color: var(--error-light);
+  color: #721c24;
+}
+
+.alert-danger::before {
+  background-color: var(--error);
+}
+
+/* Ícones de alerta */
+.alert::after {
+  font-family: 'system-ui';
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+  opacity: 0.2;
+}
+
+.alert-warning::after {
+  content: '⚠';
+}
+
+.alert-success::after {
+  content: '✓';
+}
+
+.alert-danger::after {
+  content: '✕';
+}
+
+/* Efeitos de loading */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+  position: relative;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.6) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="50" cy="50" r="32" stroke-width="8" stroke="%23D9A86C" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round" transform="rotate(335.008 50 50)"><animateTransform attributeName="transform" type="rotate" dur="1s" repeatCount="indefinite" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform></circle></svg>') no-repeat center center;
+  background-size: 50px;
+  z-index: 10;
+}
+
+/* ====== 13. Perfil do Artista com Flip 3D ====== */
+/* Card 3D para perfil do artista */
+.artist-profile-section {
+  margin-top: 40px;
+  perspective: 2000px;
+}
+
+.artist-profile-card {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+  cursor: pointer;
+  min-height: 400px;
+}
+
+.artist-profile-card.flipped {
+  transform: rotateY(180deg);
+}
+
+/* Frente do Card */
+.artist-profile-front {
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-brown) 100%);
+  border-radius: 24px;
+  padding: 40px;
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  color: white;
+  flex-wrap: wrap;
+  backface-visibility: hidden;
+  position: relative;
+  min-height: 400px;
+}
+
+/* Verso do Card */
+.artist-profile-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, var(--color-beige-light) 0%, var(--color-offwhite) 100%);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  backface-visibility: hidden;
+  transform: rotateY(180deg);
+  min-height: 400px;
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+.artist-profile-image {
+  flex-shrink: 0;
+  position: relative;
+}
+
+.artist-profile-image img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 6px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transition: all 0.5s ease;
+  position: relative;
+  z-index: 1;
+}
+
+/* Hover effect na foto do artista - igual ao RhythmBox */
+.artist-profile-image::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+  transition: transform 0.5s ease;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.artist-profile-image:hover::before {
+  transform: translate(-50%, -50%) scale(1.3);
+}
+
+.artist-profile-image:hover img {
+  transform: scale(1.05) rotate(5deg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.artist-placeholder {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 100px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.artist-profile-info {
+  flex: 1;
+  min-width: 300px;
+}
+
+.artist-profile-front .artist-name {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.artist-stats {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.artist-stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.artist-stat i {
+  font-size: 1.3rem;
+}
+
+.artist-genres {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.genre-badge {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 10px 18px;
+  border-radius: 24px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  cursor: default;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.3px;
+}
+
+.genre-badge:hover {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.flip-hint {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: pulseHint 2s ease-in-out infinite;
+}
+
+@keyframes pulseHint {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+/* ====== 14. Animação de Auto-Click nos Botões ====== */
+/* Efeito visual de auto-click nos botões de perfil */
+.auto-click-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: brightness(1.3);
+  transition: width 0.1s linear;
+  z-index: 1;
+  border-radius: 30px;
+}
+
+.auto-click-progress-bar.filling {
+  animation: fillProgress 2s linear forwards;
+}
+
+@keyframes fillProgress {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+.auto-click-loading {
+  transition: all 0.3s ease;
+}
+
+.auto-click-loading i,
+.auto-click-loading span {
+  position: relative;
+  z-index: 2;
+}
+
+.redirecting {
+  animation: redirectFlash 0.2s ease-out;
+}
+
+@keyframes redirectFlash {
+
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+
+  50% {
+    filter: brightness(1.4);
+  }
+}
+
+/* ====== 15. Verso do Card - Conteúdo ====== */
+/* Conteúdo detalhado do artista no verso do card */
+.artist-back-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--color-gold);
+}
+
+.artist-back-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin: 0 0 10px 0;
+}
+
+.artist-back-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.artist-back-content {
+  color: var(--text-main);
+}
+
+.artist-back-section {
+  margin-bottom: 30px;
+}
+
+.artist-back-section h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.artist-back-section h3 i {
+  color: var(--color-gold);
+}
+
+.artist-top-tracks-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.artist-top-track-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: white;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.artist-top-track-item:hover {
+  transform: translateX(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.track-number {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-gold);
+  min-width: 30px;
+  text-align: center;
+}
+
+.track-cover-mini {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.track-info-mini {
+  flex: 1;
+  min-width: 0;
+}
+
+.track-name-mini {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-heading);
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-album-mini {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Container de ações das músicas (coração + play) */
+.track-actions-mini {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Botão de favoritar mini */
+.btn-favorite-mini {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--color-gold);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 2px solid var(--color-gold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+.btn-favorite-mini:hover {
+  background: var(--color-gold);
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(217, 168, 108, 0.3);
+}
+
+.btn-favorite-mini.favorited {
+  background: var(--color-gold);
+  color: white;
+  border-color: var(--color-gold);
+}
+
+.btn-favorite-mini.favorited i {
+  animation: heartBeat 0.3s ease;
+}
+
+/* Botão de play mini */
+.btn-play-mini {
+  background: var(--color-gold);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+.btn-play-mini:hover {
+  background: var(--color-brown);
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(217, 168, 108, 0.4);
+}
+
+/* Animação do coração */
+@keyframes heartBeat {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.3);
+  }
+}
+
+.btn-flip-back {
+  background: var(--color-gold);
+  color: white;
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-weight: 600;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  margin: 20px auto 0;
+  display: flex;
+  justify-content: center;
+  max-width: 200px;
+}
+
+.btn-flip-back:hover {
+  background: var(--color-brown);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(217, 168, 108, 0.4);
+}
+
+/* ====== 16. Section Titles ====== */
+/* Títulos de seções */
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-title i {
+  font-size: 1.6rem;
+  color: var(--color-gold);
+}
+
+/* ====== 17. Cards de Artistas Relacionados ====== */
+/* Cards para artistas relacionados */
+.artist-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.artist-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+.artist-card-image {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.artist-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.artist-card:hover .artist-card-image img {
+  transform: scale(1.1);
+}
+
+.artist-card-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+  color: rgba(0, 0, 0, 0.15);
+}
+
+.artist-card-body {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.artist-card-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin: 0 0 12px 0;
+  line-height: 1.3;
+  min-height: 2.6em;
+}
+
+.artist-card-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.genre-tag {
+  background: linear-gradient(135deg, var(--color-gold-light) 0%, var(--color-gold) 100%);
+  color: var(--text-main);
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  border: 1px solid rgba(217, 168, 108, 0.3);
+  transition: all 0.3s ease;
+  cursor: default;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  letter-spacing: 0.2px;
+}
+
+.genre-tag:hover {
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-brown) 100%);
+  color: white;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(217, 168, 108, 0.3);
+  border-color: var(--color-gold);
+}
+
+.artist-card-popularity {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-gold);
+  font-weight: 600;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+}
+
+.artist-card-popularity i {
+  font-size: 1rem;
+}
+
+.btn-artist-spotify {
+  background: var(--color-gold);
+  color: var(--text-main);
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-artist-spotify:hover {
+  background: var(--color-gold-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(217, 168, 108, 0.4);
+  color: var(--text-main);
+}
+
+/* ====== RESPONSIVO ====== */
+@media (max-width: 992px) {
+  .artist-profile-front {
+    padding: 30px;
+    gap: 30px;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .artist-profile-back {
+    padding: 30px;
+  }
+
+  .artist-profile-image img,
+  .artist-placeholder {
+    width: 160px;
+    height: 160px;
+  }
+
+  .artist-profile-image::before {
+    width: 160px;
+    height: 160px;
+  }
+
+  .artist-profile-front .artist-name {
+    font-size: 2.2rem;
+  }
+
+  .artist-stats {
+    justify-content: center;
+  }
+
+  .artist-genres {
+    justify-content: center;
+  }
+
+  .flip-hint {
+    position: static;
+    margin-top: 20px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .artist-profile-front {
+    padding: 24px;
+    gap: 20px;
+    min-height: 350px;
+  }
+
+  .artist-profile-back {
+    padding: 24px;
+    max-height: 500px;
+  }
+
+  .artist-profile-image img,
+  .artist-placeholder {
+    width: 120px;
+    height: 120px;
+  }
+
+  .artist-profile-image::before {
+    width: 120px;
+    height: 120px;
+  }
+
+  .artist-profile-front .artist-name {
+    font-size: 1.8rem;
+  }
+
+  .artist-stat {
+    font-size: 0.95rem;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+  }
+
+  .artist-back-title {
+    font-size: 1.6rem;
+  }
+
+  .track-info-mini {
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .track-actions-mini {
+    gap: 6px;
+  }
+
+  .btn-favorite-mini,
+  .btn-play-mini {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    min-width: 36px;
+  }
+
+  .artist-top-track-item {
+    gap: 10px;
+    padding: 10px;
+  }
+}
+
+/* Oculta a imagem do artista quando o card está virado */
+.artist-profile-card.flipped .artist-profile-image {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}

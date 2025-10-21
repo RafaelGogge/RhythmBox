@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+
+{# ============================= #}
+{# PÁGINA DE FAVORITOS          #}
+{# Exibe músicas favoritas      #}
+{# com filtros e paginação      #}
+{# ============================= #}
+
+{% block title %}Minhas Músicas Favoritas - RhythmBox{% endblock %}
+
+{# ============================= #}
+{# ESTILOS CUSTOMIZADOS         #}
+{# ============================= #}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/favoritos.css" />
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}
+
+{# ============================= #}
+{# CONTEÚDO PRINCIPAL           #}
+{# ============================= #}
+{% block content %}
+<div class="favoritos-container">
+  
+  {# ========== CABEÇALHO ========== #}
+  <div class="favoritos-header">
+    <div class="header-content">
+      <h1 class="favoritos-title">
+        <i class="bi bi-heart-fill me-3"></i>
+        Minhas Músicas Favoritas
+      </h1>
+    </div>
+  </div>
+
+  {# ========== MENSAGENS DE ERRO ========== #}
+  {% if error %}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    {{ error }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+  </div>
+  {% endif %}
+
+  {# ========== BARRA DE FERRAMENTAS ========== #}
+  {# Exibida apenas quando há músicas          #}
+  {% if tracks %}
+  <div class="toolbar">
+    
+    {# Campo de Busca #}
+    <div class="search-box">
+      <i class="bi bi-search"></i>
+      <input
+        type="text"
+        id="searchInput"
+        class="search-input"
+        placeholder="Buscar nas suas músicas favoritas..."
+        aria-label="Buscar músicas"
+      />
+    </div>
+
+    {# Ações da Toolbar #}
+    <div class="toolbar-actions">
+      
+      {# Filtro por Artista #}
+      <div class="filter-group">
+        <label for="artistFilter" class="filter-label">
+          <i class="bi bi-person-fill"></i>
+          Artista:
+        </label>
+        <select 
+          id="artistFilter" 
+          class="filter-select" 
+          title="Filtrar músicas da página atual por artista"
+          aria-label="Filtrar por artista"
+        >
+          <option value="all">🎵 Todos os artistas (página atual)</option>
+          {# Artistas carregados dinamicamente via JavaScript #}
+        </select>
+      </div>
+
+      {# Ordenação #}
+      <div class="filter-group">
+        <label for="sortSelect" class="filter-label">
+          <i class="bi bi-funnel-fill"></i>
+          Ordenar:
+        </label>
+        <select id="sortSelect" class="filter-select" aria-label="Ordenar músicas">
+          <option value="default" {% if sort == 'default' %}selected{% endif %}>Padrão</option>
+          <option value="name-asc" {% if sort == 'name-asc' %}selected{% endif %}>Nome (A-Z)</option>
+          <option value="name-desc" {% if sort == 'name-desc' %}selected{% endif %}>Nome (Z-A)</option>
+          <option value="artist-asc" {% if sort == 'artist-asc' %}selected{% endif %}>Artista (A-Z)</option>
+          <option value="artist-desc" {% if sort == 'artist-desc' %}selected{% endif %}>Artista (Z-A)</option>
+        </select>
+      </div>
+
+      {# Contador de Músicas #}
+      <span class="track-counter" aria-live="polite">
+        <i class="bi bi-music-note-list me-1"></i>
+        <span class="page-range-start">{{ ((page - 1) * limit + 1) if total > 0 else 0 }}</span> 
+        a 
+        <span class="page-range-end">{{ [page * limit, total]|min }}</span> 
+        de
+        <span class="pagination-total">{{ total }}</span>
+      </span>
+    </div>
+  </div>
+  {% endif %}
+
+  {# ========== GRID DE MÚSICAS ========== #}
+  {% if tracks %}
+  <div class="favorites-grid" id="favoritesGrid">
+    {% for track in tracks %}
+    <div
+      class="favorite-card"
+      data-track-name="{{ track.name|lower }}"
+      data-artist-name="{{ track.artist|lower }}"
+      data-album-name="{{ track.album|lower if track.album else '' }}"
+    >
+      
+      {# Capa do Álbum #}
+      <div class="card-image">
+        <img
+          src="{{ track.image_url }}"
+          alt="Capa de {{ track.name }}"
+          loading="lazy"
+          onerror="this.onerror=null;this.src='/static/img/default-album.png';"
+        />
+        
+        {# Overlay com Botões de Ação #}
+        <div class="card-overlay">
+          <a
+            href="https://open.spotify.com/track/{{ track.id }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn spotify-link"
+            title="Ouvir no Spotify"
+            onclick="event.stopPropagation();"
+          >
+            <i class="bi bi-spotify"></i>
+          </a>
+          <a
+            href="https://www.youtube.com/results?search_query={{ track.artist|urlencode }}+{{ track.name|urlencode }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn youtube-link"
+            title="Ouvir no YouTube"
+            onclick="event.stopPropagation();"
+          >
+            <i class="bi bi-youtube"></i>
+          </a>
+          <button
+            class="btn btn-remove-favorite"
+            data-track-id="{{ track.id }}"
+            data-track-name="{{ track.name }}"
+            title="Remover dos favoritos"
+            aria-label="Remover {{ track.name }} dos favoritos"
+          >
+            <i class="bi bi-heart-fill"></i>
+          </button>
+        </div>
+      </div>
+
+      {# Informações da Música #}
+      <div class="card-info">
+        <h5 class="track-name" title="{{ track.name }}">{{ track.name }}</h5>
+        <p class="artist-name" title="{{ track.artist }}">{{ track.artist }}</p>
+        {% if track.album %}
+        <p class="album-name" title="{{ track.album }}">{{ track.album }}</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {# ========== CONTROLES DE PAGINAÇÃO ========== #}
+  <div class="pagination-container" id="paginationContainer">
+    
+    {# Informação de Paginação #}
+    <div class="pagination-info" aria-live="polite">
+      Mostrando 
+      <span id="pageRangeStart">{{ ((page - 1) * limit + 1) if total > 0 else 0 }}</span>-<span id="pageRangeEnd">{{ [page * limit, total]|min }}</span>
+      de 
+      <span id="paginationTotal">{{ total }}</span>
+    </div>
+
+    {# Botões de Navegação #}
+    <div class="pagination-controls">
+      <button 
+        id="btnFirstPage" 
+        class="btn-pagination" 
+        title="Primeira página"
+        aria-label="Ir para primeira página"
+      >
+        <i class="bi bi-chevron-double-left"></i>
+      </button>
+      <button 
+        id="btnPrevPage" 
+        class="btn-pagination" 
+        title="Página anterior"
+        aria-label="Ir para página anterior"
+      >
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      
+      {# Indicador de Página Atual #}
+      <span class="pagination-current">
+        Página <span id="currentPageNum">{{ page }}</span> de
+        <span id="totalPages">{{ ((total + limit - 1) // limit) if total > 0 else 1 }}</span>
+      </span>
+      
+      <button 
+        id="btnNextPage" 
+        class="btn-pagination" 
+        title="Próxima página"
+        aria-label="Ir para próxima página"
+      >
+        <i class="bi bi-chevron-right"></i>
+      </button>
+      <button 
+        id="btnLastPage" 
+        class="btn-pagination" 
+        title="Última página"
+        aria-label="Ir para última página"
+      >
+        <i class="bi bi-chevron-double-right"></i>
+      </button>
+    </div>
+
+    {# Seletor de Itens por Página #}
+    <div class="pagination-jump">
+      <label for="itemsPerPageSelect">Por página:</label>
+      <select id="itemsPerPageSelect" class="items-per-page-select" aria-label="Itens por página">
+        <option value="20" {% if limit == 20 %}selected{% endif %}>20</option>
+        <option value="30" {% if limit == 30 %}selected{% endif %}>30</option>
+        <option value="50" {% if limit == 50 %}selected{% endif %}>50</option>
+        <option value="100" {% if limit == 100 %}selected{% endif %}>100</option>
+        <option value="all" {% if limit == 9999 %}selected{% endif %}>📋 Todas</option>
+      </select>
+    </div>
+  </div>
+
+  {% else %}
+  {# ========== ESTADO VAZIO ========== #}
+  <div class="empty-state">
+    <div class="empty-icon">
+      <i class="bi bi-heart"></i>
+    </div>
+    <h3 class="empty-title">Nenhuma música favorita ainda</h3>
+    <p class="empty-text">
+      Comece a adicionar suas músicas favoritas!<br />
+      Vá para a página de <a href="{{ url_for('buscar') }}">Buscar</a> e
+      adicione músicas aos favoritos.
+    </p>
+    <a href="{{ url_for('buscar') }}" class="btn-primary-custom">
+      <i class="bi bi-search me-2"></i>
+      Buscar Músicas
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+{# ========== TOAST PARA FEEDBACK ========== #}
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="feedbackToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <i class="bi bi-check-circle-fill text-success me-2"></i>
+      <strong class="me-auto">Sucesso</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Fechar"></button>
+    </div>
+    <div class="toast-body">Operação realizada com sucesso!</div>
+  </div>
+</div>
+{% endblock %}
+
+{# ============================= #}
+{# SCRIPTS JAVASCRIPT           #}
+{# ============================= #}
+{% block extra_js %}
+<script>
+  // Dados de paginação do servidor
+  window.PAGINATION_DATA = {
+    currentPage: {{ page }},
+    itemsPerPage: {{ limit }},
+    totalItems: {{ total }},
+    totalPages: {{ ((total + limit - 1) // limit) }},
+    sort: {{ (sort|tojson)|safe }}
+  };
+</script>
+<script src="/static/js/favoritos.js"></script>
+{% endblock %}

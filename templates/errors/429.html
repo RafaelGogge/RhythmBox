@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}429 - Muitas Requisições{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-900 via-black to-gray-900">
+    <div class="text-center px-4">
+        <h1 class="text-9xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-600">
+            429
+        </h1>
+        <h2 class="text-3xl font-bold text-white mt-4 mb-2">
+            Muitas Requisições
+        </h2>
+        <p class="text-gray-400 text-lg mb-4">
+            Você fez muitas requisições em um curto período de tempo.
+        </p>
+        <p class="text-gray-500 text-sm mb-8">
+            Por favor, aguarde alguns minutos antes de tentar novamente.
+        </p>
+        <div class="flex gap-4 justify-center">
+            <a href="{{ url_for('index') }}" 
+               class="px-6 py-3 bg-gradient-to-r from-yellow-600 to-orange-600 text-white rounded-lg hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300">
+                🏠 Voltar ao Início
+            </a>
+        </div>
+        <div class="mt-8 text-gray-500 text-sm">
+            <p>⏱️ Aguarde alguns minutos e recarregue a página</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

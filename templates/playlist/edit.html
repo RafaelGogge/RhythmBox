@@ -1,0 +1,490 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="edit-playlist-container">
+  <div class="edit-header">
+    <h2 class="h4 mb-4">
+      Editar Playlist: <span style="color:#1976d2">{{ playlist.name }}</span>
+    </h2>
+    <a href="{{ url_for('playlists') }}" class="btn" style="background: var(--color-brown);">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 6px;">
+        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+      </svg>
+      Voltar
+    </a>
+  </div>
+
+  <!-- Formulário para editar nome -->
+  <div class="edit-section">
+    <h3 class="section-title">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 8px;">
+        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+      </svg>
+      Alterar Nome da Playlist
+    </h3>
+    <form method="post" class="edit-name-form">
+      <div class="form-group">
+        <input 
+          type="text" 
+          name="name" 
+          value="{{ playlist.name }}" 
+          required 
+          class="form-control"
+          placeholder="Nome da playlist"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 6px;">
+          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+        </svg>
+        Salvar Nome
+      </button>
+    </form>
+  </div>
+
+  <!-- Lista de músicas para organizar/remover -->
+  <div class="edit-section">
+    <h3 class="section-title">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 8px;">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+      </svg>
+      Gerenciar Músicas ({{ playlist.tracks['items']|length if playlist.tracks and playlist.tracks['items'] else 0 }})
+    </h3>
+    
+    {% if playlist.tracks and playlist.tracks['items'] %}
+      <div class="tracks-manager">
+        <div class="manager-hint">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z"/>
+          </svg>
+          Arraste as músicas para reorganizar a ordem na playlist
+        </div>
+        
+        <ul id="sortable-tracks" class="tracks-list">
+          {% for item in playlist.tracks['items'] %}
+            <li class="track-item" data-track-uri="{{ item.track.uri }}" draggable="true">
+              <div class="track-drag-handle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                </svg>
+              </div>
+              
+              <div class="track-info">
+                {% if item.track.album.images and item.track.album.images[0].url %}
+                  <img src="{{ item.track.album.images[0].url }}" alt="Capa" class="track-cover">
+                {% else %}
+                  <div class="track-cover-placeholder">♪</div>
+                {% endif %}
+                
+                <div class="track-details">
+                  <div class="track-name">{{ item.track.name }}</div>
+                  <div class="track-artist">{{ item.track.artists[0].name }}</div>
+                  <div class="track-album">{{ item.track.album.name }}</div>
+                </div>
+              </div>
+              
+              <form method="post" class="track-remove-form" onsubmit="return confirm('Tem certeza que deseja remover esta música da playlist?');">
+                <input type="hidden" name="remove_track_uri" value="{{ item.track.uri }}">
+                <button type="submit" name="remove_track" class="btn-remove-track" title="Remover música">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                  </svg>
+                </button>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+        
+        <div class="manager-actions">
+          <button id="save-order-btn" class="btn btn-success" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 6px;">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+            Salvar Nova Ordem
+          </button>
+          <button id="reset-order-btn" class="btn" style="display: none; background: #666;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 6px;">
+              <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+            </svg>
+            Cancelar
+          </button>
+        </div>
+      </div>
+    {% else %}
+      <div class="alert alert-warning" style="background: var(--error-light); color: var(--error); border-radius: 8px;">
+        Nenhuma música nesta playlist.
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  .edit-playlist-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .edit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .edit-section {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 28px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #3d2c1e;
+    margin: 0 0 24px 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .edit-name-form {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .form-group {
+    flex: 1;
+    min-width: 250px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: #1976d2;
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+  }
+
+  .tracks-manager {
+    position: relative;
+  }
+
+  .manager-hint {
+    background: #f5f7fa;
+    padding: 14px 18px;
+    border-radius: 10px;
+    color: #666;
+    font-size: 0.92rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tracks-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .track-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px;
+    background: #fafafa;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    transition: all 0.25s;
+    cursor: move;
+  }
+
+  .track-item:hover {
+    background: #f0f0f0;
+    border-color: #c49b5c;
+  }
+
+  .track-item.dragging {
+    opacity: 0.5;
+    transform: scale(0.98);
+  }
+
+  .track-item.drag-over {
+    border-color: #1976d2;
+    border-style: dashed;
+    background: #e3f2fd;
+  }
+
+  .track-drag-handle {
+    cursor: grab;
+    color: #999;
+    display: flex;
+    align-items: center;
+  }
+
+  .track-drag-handle:active {
+    cursor: grabbing;
+  }
+
+  .track-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .track-cover {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .track-cover-placeholder {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    background: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #999;
+    flex-shrink: 0;
+  }
+
+  .track-details {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .track-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #2d1c00;
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .track-artist {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .track-album {
+    font-size: 0.85rem;
+    color: #999;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .track-remove-form {
+    margin: 0;
+  }
+
+  .btn-remove-track {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #ffebee;
+    color: #d32f2f;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-remove-track:hover {
+    background: #d32f2f;
+    color: white;
+    transform: scale(1.1);
+  }
+
+  .manager-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    justify-content: center;
+  }
+
+  .btn-success {
+    background: #4caf50 !important;
+    color: white;
+  }
+
+  .btn-success:hover {
+    background: #45a049 !important;
+  }
+
+  @media (max-width: 768px) {
+    .edit-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .track-item {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .track-info {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  // Sistema de drag and drop para reorganizar músicas
+  let draggedElement = null;
+  let originalOrder = [];
+  const tracksList = document.getElementById('sortable-tracks');
+  const saveBtn = document.getElementById('save-order-btn');
+  const resetBtn = document.getElementById('reset-order-btn');
+
+  if (tracksList) {
+    // Salva ordem original
+    originalOrder = Array.from(tracksList.children).map(item => item.dataset.trackUri);
+
+    const trackItems = tracksList.querySelectorAll('.track-item');
+
+    trackItems.forEach(item => {
+      item.addEventListener('dragstart', handleDragStart);
+      item.addEventListener('dragover', handleDragOver);
+      item.addEventListener('drop', handleDrop);
+      item.addEventListener('dragend', handleDragEnd);
+      item.addEventListener('dragenter', handleDragEnter);
+      item.addEventListener('dragleave', handleDragLeave);
+    });
+  }
+
+  function handleDragStart(e) {
+    draggedElement = this;
+    this.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.innerHTML);
+  }
+
+  function handleDragOver(e) {
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+    e.dataTransfer.dropEffect = 'move';
+    return false;
+  }
+
+  function handleDragEnter(e) {
+    if (this !== draggedElement) {
+      this.classList.add('drag-over');
+    }
+  }
+
+  function handleDragLeave(e) {
+    this.classList.remove('drag-over');
+  }
+
+  function handleDrop(e) {
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+
+    if (draggedElement !== this) {
+      // Swap elements
+      const allItems = Array.from(tracksList.children);
+      const draggedIndex = allItems.indexOf(draggedElement);
+      const targetIndex = allItems.indexOf(this);
+
+      if (draggedIndex < targetIndex) {
+        this.parentNode.insertBefore(draggedElement, this.nextSibling);
+      } else {
+        this.parentNode.insertBefore(draggedElement, this);
+      }
+
+      checkOrderChanged();
+    }
+
+    this.classList.remove('drag-over');
+    return false;
+  }
+
+  function handleDragEnd(e) {
+    this.classList.remove('dragging');
+    
+    tracksList.querySelectorAll('.track-item').forEach(item => {
+      item.classList.remove('drag-over');
+    });
+  }
+
+  function checkOrderChanged() {
+    const currentOrder = Array.from(tracksList.children).map(item => item.dataset.trackUri);
+    const hasChanged = !arraysEqual(originalOrder, currentOrder);
+
+    if (hasChanged) {
+      saveBtn.style.display = 'inline-flex';
+      resetBtn.style.display = 'inline-flex';
+    } else {
+      saveBtn.style.display = 'none';
+      resetBtn.style.display = 'none';
+    }
+  }
+
+  function arraysEqual(a, b) {
+    return a.length === b.length && a.every((val, index) => val === b[index]);
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      // Restaura ordem original
+      const items = Array.from(tracksList.children);
+      items.sort((a, b) => {
+        return originalOrder.indexOf(a.dataset.trackUri) - originalOrder.indexOf(b.dataset.trackUri);
+      });
+
+      items.forEach(item => tracksList.appendChild(item));
+      
+      saveBtn.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  }
+
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      const newOrder = Array.from(tracksList.children).map(item => item.dataset.trackUri);
+      
+      // Aqui você implementaria a chamada para salvar a nova ordem
+      console.log('Nova ordem:', newOrder);
+      
+      alert('Funcionalidade de reorganização em desenvolvimento!\n\nA API do Spotify não permite reordenar faixas facilmente.\nPor enquanto, você pode remover e adicionar músicas novamente na ordem desejada.');
+      
+      // Atualiza ordem original
+      originalOrder = newOrder;
+      saveBtn.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  }
+</script>
+
+{% endblock %}
