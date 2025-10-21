@@ -4,7 +4,7 @@ python-dotenv==1.0.1
 requests==2.32.3
 flask-compress==1.15
 redis==5.0.4  # Cache e session storage
-vercel-wsgi==0.8.0
+vercel-wsgi==1.1.0
 flask-limiter==3.7.0
 flask-cors==4.0.1
 flask-talisman==1.1.0
